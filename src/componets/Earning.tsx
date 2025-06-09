@@ -1,25 +1,21 @@
 import React, { useState } from 'react';
-import { ID, Permission, Role } from 'appwrite';
 import { databases } from '../Appwrite/database';
-import config from '../config/config';
 import { toast } from 'react-toastify';
+import config from '../config/config';
 
 function Earning() {
-  const [value, setValue] = useState('');
   const [amount, setAmount] = useState<number>();
   const [load, setLoad] = useState(false);
+
+  // const [userInput, setUserInput] = useState({
+  //   EarningLabel: "",
+  //   EarningAmount: 0
+  // })
 
   const handleSubmit = async () => {
     setLoad(true);
     try {
-      const result = await databases.createDocument(
-        config.appwriteDatabaseId,
-        config.appwriteEarningCollectionId,
-        ID.unique(),
-        { earning: value, amount },
-        [Permission.read(Role.any())]
-      );
-      console.log(result);
+      await databases.updateDocument(config.appwriteDatabaseId, config.appwriteEarningCollectionId, "684727380007b52f1c8c", { amount: amount })
       toast.success('Earning save successfully!');
       setValue('');
 
@@ -40,14 +36,6 @@ function Earning() {
         </h1>
 
         <input
-          type="text"
-          placeholder="Earning via"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 dark:focus:ring-green-600"
-        />
-
-        <input
           type="number"
           placeholder="Amount to enter"
           value={amount || ''}
@@ -58,11 +46,10 @@ function Earning() {
         <button
           onClick={handleSubmit}
           disabled={load}
-          className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition-colors ${
-            load
-              ? 'bg-green-300 cursor-not-allowed'
-              : 'bg-green-600 hover:bg-green-700'
-          }`}
+          className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition-colors ${load
+            ? 'bg-green-300 cursor-not-allowed'
+            : 'bg-green-600 hover:bg-green-700'
+            }`}
         >
           {load ? 'Saving...' : 'Save'}
         </button>
